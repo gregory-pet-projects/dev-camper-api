@@ -1,10 +1,14 @@
 const express = require('express');
-const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./src/config/db');
 require('colors');
 const errorHandler = require('./src/middleware/error');
+
+//Load env files
+const dotenv = require('dotenv');
 dotenv.config({ path: './src/config/config.env' });
+
+//Import routes
 const bootcamps = require('./src/routes/bootcamps');
 const courses = require('./src/routes/courses');
 
@@ -21,10 +25,14 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+//Mount routes
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
 
+//Middleware error hanlder
 app.use(errorHandler);
+
+//Init server
 const PORT = process.env.PORT || 3300;
 const server = app.listen(PORT, () =>
   console.log(

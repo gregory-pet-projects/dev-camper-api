@@ -6,7 +6,7 @@ const asyncHandler = require('../middleware/async');
 //@route GET /api/v1/courses
 //@route GET /api/v1/bootcamps/:bootcampID/courses
 //@access Public
-exports.getListCourses = asyncHandler(async (req, res, nxt) => {
+exports.getListCourses = asyncHandler(async (req, res, next) => {
   let query;
   if (req.params.bootcampId) {
     query = Course.find({ bootcamp: req.params.bootcampId });
@@ -27,20 +27,17 @@ exports.getListCourses = asyncHandler(async (req, res, nxt) => {
 //@desc Get single course
 //@route GET /api/v1/courses/:id
 //@access Public
-exports.getCourse = asyncHandler(async (req, res, nxt) => {
-  let query;
-  if (req.params.bootcampId) {
-    query = Course.find({ bootcamp: req.params.bootcampId });
-  } else {
-    query = Course.find().populate({
-      path: 'bootcamp',
-      select: 'name description',
-    });
+exports.getCourse = asyncHandler(async (req, res, next) => {
+  const course = await Course.findById(req.params.id).populate({
+    path: 'bootcamp',
+    select: 'name description',
+  });
+  if (!course) {
+    next(new ErrorResponse(`No cource with id of ${req.params.id}`, 404));
   }
-  const courses = await query;
+
   res.status(200).json({
     success: true,
-    count: courses.length,
-    data: courses,
+    data: course,
   });
 });

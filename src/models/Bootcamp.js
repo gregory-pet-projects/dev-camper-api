@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const slugify = require('slugify')
+const geocoder = require('../utils/geocoder')
+
 const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z\d@:%._+~#=]{1,256}\.[a-zA-Z\d()]{1,6}\b([-a-zA-Z\d()@:%_+.~#?&/=]*)/
 const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}])|(([a-zA-Z\-\d]+\.)+[a-zA-Z]{2,}))$/
 
@@ -41,14 +43,14 @@ const BootcampSchema = new mongoose.Schema({
         coordinates: {
             type: [Number],
             index: '2dsphere'
-        }
+        },
+        formattedAddress: String,
+        street: String,
+        city: String,
+        state: String,
+        zipcode: String,
+        country: String,
     },
-    formattedAddress: String,
-    street: String,
-    city: String,
-    state: String,
-    zipcode: String,
-    country: String,
     careers: {
         type: [String],
         required: true,
@@ -98,5 +100,25 @@ BootcampSchema.pre('save', function (next) {
     this.slug = slugify(this.name, {lower: true})
     next()
 })
+
+//Geocode create location field
+BootcampSchema.pre('save', async function (next) {
+    const [loc] = await geocoder.geocode(this.address)
+    console.log({loc})
+    this.location = {
+        type: 'Point',
+        coordinates: [loc.longitude, loc.latitude],
+        formattedAddress: loc.formattedAddress,
+        street: loc.streetName,
+        city: loc.city,
+        state: loc.stateCode,
+        zipcode: loc.zipcode,
+        country: loc.countryCode,
+    }
+    //Do not save address in db
+    this.adderss = undefined
+    next()
+})
+
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema)

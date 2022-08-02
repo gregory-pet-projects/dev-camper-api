@@ -16,6 +16,8 @@ app.use(express.json())
 //DB
 connectDB()
 
+
+
 //Dev logging middleware
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))

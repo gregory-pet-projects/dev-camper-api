@@ -104,7 +104,6 @@ BootcampSchema.pre('save', function (next) {
 //Geocode create location field
 BootcampSchema.pre('save', async function (next) {
     const [loc] = await geocoder.geocode(this.address)
-    console.log({loc})
     this.location = {
         type: 'Point',
         coordinates: [loc.longitude, loc.latitude],
@@ -116,7 +115,7 @@ BootcampSchema.pre('save', async function (next) {
         country: loc.countryCode,
     }
     //Do not save address in db
-    this.adderss = undefined
+    delete this.adderss
     next()
 })
 

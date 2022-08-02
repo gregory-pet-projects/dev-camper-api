@@ -1,12 +1,11 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const morgan = require('morgan')
-const bootcamps = require('./src/routes/bootcamps')
 const connectDB = require('./src/config/db')
 require('colors')
 const errorHandler = require('./src/middleware/error')
-
 dotenv.config({path: './src/config/config.env'})
+const bootcamps = require('./src/routes/bootcamps')
 
 const app = express()
 

@@ -68,13 +68,16 @@ exports.addCourse = asyncHandler(async (req, res, next) => {
 //@route PUT /api/v1/bootcamps/:bootcampId/courses/:id
 //@access Private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
-  let course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+  const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
+
   if (!course) {
     next(new ErrorResponse(`No course with id of ${req.params.id}`, 404));
   }
+
+  await course.save();
 
   res.status(200).json({
     success: true,

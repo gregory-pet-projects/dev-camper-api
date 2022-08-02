@@ -50,13 +50,9 @@ exports.getListBootcamps = asyncHandler(async (req, res, next) => {
     const bootcamps = await query
 
     //Pagination result
-    let pagination = {}
-
-    if (total > limit) {
-        pagination.current = {
-            page,
-            limit
-        }
+    let pagination = {
+        page,
+        limit
     }
 
     if (endIndex < total) {

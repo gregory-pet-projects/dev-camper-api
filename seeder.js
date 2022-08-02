@@ -8,11 +8,10 @@ dotenv.config(({path: './src/config/config.env'}))
 const Bootcamp = require('./src/models/Bootcamp')
 
 //Connect to db
-const connectDb= (async ()=> {
+(async () => {
     const conn = await mongoose.connect(process.env.MONGO_URI)
     console.log(`Mongo DB connected ${conn.connection.host}`.cyan.underline.bold)
-})()
-
+})();
 //Read JSON files
 const bootcamps = JSON.parse(
     readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8')
@@ -39,8 +38,8 @@ const deleteData = async () => {
     }
 }
 
-if(process.argv[2] === '-i'){
+if (process.argv[2] === '-i') {
     importData()
-}else if(process.argv[2] === '-d'){
+} else if (process.argv[2] === '-d') {
     deleteData()
 }

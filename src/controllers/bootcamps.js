@@ -9,12 +9,76 @@ const geocoder = require('../utils/geocoder')
 //@access Public
 exports.getListBootcamps = asyncHandler(async (req, res, next) => {
     let query;
-    let queryStr = JSON.stringify(req.query)
+    const reqQuery = {...req.query}
+
+    //Fields to exclude
+    const removeFields = ['select', 'sort', 'page', 'limit']
+
+    //Loop over remove fields and delete from query
+    removeFields.forEach(param => delete reqQuery[param])
+
+    //Create query str
+    let queryStr = JSON.stringify(reqQuery)
+
+    //Create operators
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`)
-    console.log(JSON.parse(queryStr))
+
+    //Find resource
     query = Bootcamp.find(JSON.parse(queryStr))
+
+    //Select fields for result
+    if (req.query.select) {
+        const fields = req.query.select.split(',').join(' ')
+        query = query.select(fields)
+    }
+
+    //Sort
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(',').join(' ')
+        query = query.sort(sortBy)
+    } else {
+        query = query.sort('-createdAt')
+    }
+
+    //Pagination
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 25;
+    const startIndex = (page - 1) * limit;
+    query = query.skip(startIndex).limit(limit)
+    const endIndex = page * limit
+    const total = await Bootcamp.countDocuments()
     const bootcamps = await query
-    res.status(200).json({success: true, count: bootcamps.length, data: bootcamps})
+
+    //Pagination result
+    let pagination = {}
+
+    if (total > limit) {
+        pagination.current = {
+            page,
+            limit
+        }
+    }
+
+    if (endIndex < total) {
+        pagination.next = {
+            page: page + 1,
+            limit
+        }
+    }
+
+    if (startIndex > 0) {
+        pagination.prev = {
+            page: page - 1,
+            limit
+        }
+    }
+
+    res.status(200).json({
+        success: true,
+        count: bootcamps.length,
+        pagination,
+        data: bootcamps
+    })
 })
 
 //@desc Get single bootcamp

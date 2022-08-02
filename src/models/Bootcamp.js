@@ -92,7 +92,8 @@ const BootcampSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    averageCost:Number
 });
 
 //Create bootcamp slug from the schema

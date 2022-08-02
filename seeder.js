@@ -8,10 +8,11 @@ dotenv.config(({path: './src/config/config.env'}))
 const Bootcamp = require('./src/models/Bootcamp')
 
 //Connect to db
-(async () => {
+const connect = async () => {
     const conn = await mongoose.connect(process.env.MONGO_URI)
     console.log(`Mongo DB connected ${conn.connection.host}`.cyan.underline.bold)
-})();
+}
+ connect()
 //Read JSON files
 const bootcamps = JSON.parse(
     readFileSync(`${__dirname}/_data/bootcamps.json`, 'utf-8')

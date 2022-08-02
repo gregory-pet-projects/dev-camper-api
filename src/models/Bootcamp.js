@@ -114,8 +114,6 @@ BootcampSchema.pre('save', async function (next) {
         zipcode: loc.zipcode,
         country: loc.countryCode,
     }
-    //Do not save address in db
-    delete this.adderss
     next()
 })
 

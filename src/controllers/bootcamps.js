@@ -1,10 +1,11 @@
 const Bootcamp = require('../models/Bootcamp')
 const ErrorResponse = require('../utils/errorResponse')
 const asyncHandler = require('../middleware/async')
+const geocoder = require('../utils/geocoder')
 
 
 //@desc Get all bootcamps
-//@route GET /api/V1/bootcamp
+//@route GET /api/V1/bootcamps
 //@access Public
 exports.getListBootcamps = asyncHandler(async (req, res, next) => {
     const bootcamps = await Bootcamp.find();
@@ -12,7 +13,7 @@ exports.getListBootcamps = asyncHandler(async (req, res, next) => {
 })
 
 //@desc Get single bootcamp
-//@route GET /api/V1/bootcamp/:id
+//@route GET /api/V1/bootcamps/:id
 //@access Public
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
     const bootcamp = await Bootcamp.findById(req.params.id);
@@ -34,7 +35,7 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 })
 
 //@desc Update bootcamp
-//@route PUT /api/V1/bootcamp/:id
+//@route PUT /api/V1/bootcamps/:id
 //@access Private
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
     const bootcamp = await Bootcamp.findOneAndUpdate(req.params.id, req.body, {
@@ -52,7 +53,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 })
 
 //@desc Delete bootcamp
-//@route DELETE /api/V1/bootcamp/:id
+//@route DELETE /api/V1/bootcamps/:id
 //@access Private
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     const bootcamp = await Bootcamp.findOneAndDelete(req.params.id)
@@ -62,5 +63,33 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         data: bootcamp
+    })
+})
+
+//@desc Get bootcamps with a radius
+//@route GET /api/V1/bootcamps/radius/:zipcode/distance
+//@access Private
+exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
+    const {postcode, distance} = req.params
+
+    //Get lat/lng from geocoder
+    const [loc] = await geocoder.geocode(postcode, distance)
+    const {latitude, longitude} = loc
+
+    //Calc radius using radians
+    //Divide distance by radius of Earth.
+    //Earth Radius = 3,963 mi or 6,378 km
+    const radius = distance / 3963
+
+    const bootcamps = await Bootcamp.find({
+        location: {
+            $geoWithin: {$centerSphere: [[longitude, latitude], radius]}
+        }
+    })
+
+    res.status(200).json({
+        success: true,
+        count: bootcamps.length,
+        data: bootcamps
     })
 })

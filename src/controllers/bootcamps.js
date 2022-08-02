@@ -83,7 +83,7 @@ exports.getListBootcamps = asyncHandler(async (req, res, next) => {
 //@route GET /api/v1/bootcamps/:id
 //@access Public
 exports.getBootcamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findById(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id).populate('courses');
   if (!bootcamp) {
     return next(
       new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 400)
@@ -145,7 +145,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
 
 //@desc Get bootcamps with a radius
 //@route GET /api/v1/bootcamps/radius/:zipcode/distance
-//@access Private
+//@access Public
 exports.getBootcampsInRadius = asyncHandler(async (req, res, next) => {
   const { postcode, distance } = req.params;
 

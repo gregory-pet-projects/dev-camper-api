@@ -5,6 +5,8 @@ const connectDB = require('./config/db');
 require('colors');
 const errorHandler = require('./src/middleware/error');
 const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
+
 //Load env files
 const dotenv = require('dotenv');
 dotenv.config({ path: './config/config.env' });
@@ -18,6 +20,9 @@ const app = express();
 
 //Body parser
 app.use(express.json());
+
+//Cookie parser
+app.use(cookieParser());
 
 //DB
 connectDB();

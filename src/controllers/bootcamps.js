@@ -3,9 +3,9 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const geocoder = require('../utils/geocoder');
 const path = require('path');
-const advancedResults = require('../middleware/advancedResults');
 const dotenv = require('dotenv');
 dotenv.config({ path: '../config/config.env' });
+
 //@desc Get all bootcamps
 //@route GET /api/v1/bootcamps
 //@access Public

@@ -12,6 +12,7 @@ dotenv.config({ path: './config/config.env' });
 //Import routes
 const bootcamps = require('./src/routes/bootcamps');
 const courses = require('./src/routes/courses');
+const auth = require('./src/routes/auth');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Mount routes
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
+app.use('/api/v1/auth', auth);
 
 //Middleware error hanlder
 app.use(errorHandler);

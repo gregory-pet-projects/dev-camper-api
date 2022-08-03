@@ -1,13 +1,13 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
-const connectDB = require('./src/config/db');
+const connectDB = require('./config/db');
 require('colors');
 const errorHandler = require('./src/middleware/error');
 const fileupload = require('express-fileupload');
 //Load env files
 const dotenv = require('dotenv');
-dotenv.config({ path: './src/config/config.env' });
+dotenv.config({ path: './config/config.env' });
 
 //Import routes
 const bootcamps = require('./src/routes/bootcamps');

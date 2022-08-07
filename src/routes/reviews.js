@@ -1,7 +1,16 @@
 const express = require('express');
-const {} = require('../controllers/reviews');
+const { getListReviews } = require('../controllers/reviews');
 const Review = require('../models/Review');
+const advancedResults = require('../middleware/advancedResults');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
+router.route('/').get(
+  advancedResults(Review, {
+    path: 'bootcamp',
+    select: 'name description',
+  }),
+  getListReviews
+);
 
 module.exports = router;

@@ -29,8 +29,11 @@ exports.getReview = asyncHandler(async (req, res, next) => {
     path: 'bootcamp',
     select: 'name description',
   });
+
   if (!review) {
-    next(new ErrorResponse(`No review with id of ${req.params.id}`, 404));
+    return next(
+      new ErrorResponse(`No review with id of ${req.params.id}`, 404)
+    );
   }
 
   res.status(200).json({

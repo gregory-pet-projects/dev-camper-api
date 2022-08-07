@@ -30,7 +30,9 @@ exports.getCourse = asyncHandler(async (req, res, next) => {
     select: 'name description',
   });
   if (!course) {
-    next(new ErrorResponse(`No cource with id of ${req.params.id}`, 404));
+    return next(
+      new ErrorResponse(`No cource with id of ${req.params.id}`, 404)
+    );
   }
 
   res.status(200).json({
@@ -80,7 +82,9 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
   });
 
   if (!course) {
-    next(new ErrorResponse(`No course with id of ${req.params.id}`, 404));
+    return next(
+      new ErrorResponse(`No course with id of ${req.params.id}`, 404)
+    );
   }
 
   //Make sure user is course owner
@@ -107,7 +111,9 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
 exports.deleteCourse = asyncHandler(async (req, res, next) => {
   const course = await Course.findById(req.params.id);
   if (!course) {
-    next(new ErrorResponse(`No course with id of ${req.params.id}`, 404));
+    return next(
+      new ErrorResponse(`No course with id of ${req.params.id}`, 404)
+    );
   }
 
   //Make sure user is course owner

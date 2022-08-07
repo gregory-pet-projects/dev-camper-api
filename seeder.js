@@ -36,7 +36,7 @@ const reviews = JSON.parse(
 );
 
 //Imports into db
-const importData = async () => {
+const importData = async (exitAfter = true) => {
   try {
     //Create new data in DB
     await User.create(users);
@@ -45,13 +45,13 @@ const importData = async () => {
     await Review.create(reviews);
 
     console.log('Data imported...'.green.inverse);
-    process.exit();
+    exitAfter && process.exit();
   } catch (e) {
     console.error(e);
   }
 };
 
-const deleteData = async () => {
+const deleteData = async (exitAfter = true) => {
   try {
     //Delete data from DB
     await Bootcamp.deleteMany();
@@ -60,9 +60,19 @@ const deleteData = async () => {
     await Review.deleteMany();
 
     console.log('Data destroyed...'.red.inverse);
-    process.exit();
+    exitAfter && process.exit();
   } catch (e) {
     console.error(e);
+  }
+};
+
+const updateData = async () => {
+  try {
+    await deleteData(false);
+    await importData(false);
+    process.exit();
+  } catch (e) {
+    console.log(e);
   }
 };
 
@@ -70,4 +80,6 @@ if (process.argv[2] === '-i') {
   importData();
 } else if (process.argv[2] === '-d') {
   deleteData();
+} else if (process.argv[2] === '-u') {
+  updateData();
 }

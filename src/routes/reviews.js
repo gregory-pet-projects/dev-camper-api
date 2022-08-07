@@ -1,5 +1,5 @@
 const express = require('express');
-const { getListReviews } = require('../controllers/reviews');
+const { getListReviews, getReview } = require('../controllers/reviews');
 const Review = require('../models/Review');
 const advancedResults = require('../middleware/advancedResults');
 
@@ -12,5 +12,7 @@ router.route('/').get(
   }),
   getListReviews
 );
+
+router.route('/:id').get(getReview);
 
 module.exports = router;

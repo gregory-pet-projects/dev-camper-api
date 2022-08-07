@@ -15,6 +15,7 @@ dotenv.config({ path: './config/config.env' });
 const bootcamps = require('./src/routes/bootcamps');
 const courses = require('./src/routes/courses');
 const auth = require('./src/routes/auth');
+const users = require('./src/routes/users');
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/users', users);
 
 //Middleware error hanlder
 app.use(errorHandler);
